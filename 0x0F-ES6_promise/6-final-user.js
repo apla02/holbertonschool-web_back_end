@@ -1,34 +1,30 @@
-#!/usr/bin/node
 import signUpUser from './4-user-promise';
 import uploadPhoto from './5-photo-reject';
 
-async function handleProfileSignup(firstName, lastName, fileName) {
-  const promi1 = {
-    status: 'pending ',
+export default async function handleProfileSignup(firstName, lastName, fileName) {
+  const user = {
+    status: 'pending',
+    value: '',
   };
-  const promi2 = {
-    status: 'pending ',
+  const photo = {
+    status: 'pending',
+    value: '',
   };
-
   try {
     const signup = await signUpUser(firstName, lastName);
-    promi1.status = 'fulfilled';
-    promi1.value = signup;
-  } catch (err) {
-    promi1.status = 'rejected';
-    promi1.value = err.toString();
+    user.status = 'fulfilled';
+    user.value = signup;
+  } catch (error) {
+    user.status = 'rejected';
+    user.value = error.toString();
   }
-
   try {
     const upload = await uploadPhoto(fileName);
-    promi2.status = 'fulfilled';
-    promi2.value = upload;
-  } catch (err) {
-    promi2.status = 'rejected';
-    promi2.value = err.toString();
+    photo.status = 'fulfilled';
+    photo.value = upload;
+  } catch (error) {
+    photo.status = 'rejected';
+    photo.value = error.toString();
   }
-
-  return [promi1, promi2];
+  return [user, photo];
 }
-
-export default handleProfileSignup;

@@ -1,9 +1,7 @@
-#!/usr/bin/node
-function signUpUser(firstName, lastName) {
+// returns a resolved promise
+export default function signUpUser(firstName, lastName) {
   return Promise.resolve({
     firstName,
     lastName,
   });
 }
-
-export default signUpUser;
