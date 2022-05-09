@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
-""" find all data that contains a particular value
-"""
+""" Where can I learn Python? """
 
 
 def schools_by_topic(mongo_collection, topic):
-    """ find all data that contains a particular value
-    """
-    return mongo_collection.find(
-        {
-            "topics": {
-                "$in": [topic]
-            }
-        }
-    )
+    """ returns the list of school having a specific topic """
+    return mongo_collection.find({ "topics": topic })

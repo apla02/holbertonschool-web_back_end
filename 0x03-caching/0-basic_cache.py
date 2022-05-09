@@ -1,38 +1,18 @@
-#!/usr/bin/env python3
-""" Implement a caching system
-"""
-
+#!/usr/bin/python3
+"""  Basic dictionary """
 from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
-    """inherit from BaseCaching and is a caching system
-    Args:
-        BaseCaching (Father class): Implement methods
-    """
-    def __init__(self):
-        super().__init__()
-
+    """ Class that inherits from BaseCaching and is a caching system
+        This caching system doesn’t have limit """
     def put(self, key, item):
-        """assign to the dictionary an item key-value pair
-        Args:
-            key ([type] Any): [key of the dict]
-            item ([type] Any): [value of the dict]
-        """
-        if key is not None and item is not None:
-            self.cache_data.update({key: item})
+        """ Assign to the dictionary """
+        if key and item:
+            self.cache_data[key] = item
 
     def get(self, key):
-        """Obtain a value from dict by key
-        Args:
-            key ([type] Any): [key of the dict]
-        Returns:
-            [type] Any: value from dict
-        """
-        if key is not None:
-            value = self.cache_data.get(key)
-            if value is None:
-                return None
-            return value
-        else:
+        """ Return the value linked """
+        if key is None or self.cache_data.get(key) is None:
             return None
+        return self.cache_data.get(key)

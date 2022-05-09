@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""Create a tuple displaying results
-"""
-from typing import Tuple
+""" Simple helper function """
 
 
-def index_range(page: int, page_size: int) -> Tuple:
-    """[summary]
-    Args:
-        page (int): amount of pages
-        page_size (int): amount row to display
-    Returns:
-        Tuple: start index - end index
-    """
-    start_index: int = (page - 1) * page_size
-    end_index: int = page * page_size
-    tuple_of_page = (start_index, end_index)
-    return tuple_of_page
+def index_range(page, page_size):
+    """ return a tuple of size two containing a start index and an end index
+        corresponding to the range of indexes to return in a list for those
+        particular pagination parameters. """
+    if page and page_size:
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        return start_index, end_index

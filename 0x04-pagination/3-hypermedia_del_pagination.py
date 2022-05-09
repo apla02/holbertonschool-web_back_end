@@ -5,7 +5,7 @@ Deletion-resilient hypermedia pagination
 
 import csv
 import math
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 
 class Server:
@@ -40,27 +40,18 @@ class Server:
         return self.__indexed_dataset
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
-        """get_hyper_index
-        Args:
-            index (int, optional): number pages. Defaults to None.
-            page_size (int, optional): number pages. Defaults to 10.
-        Returns:
-            Dict: data the file
-        """
-        assert 0 <= index < len(self.dataset())
-        indexed_dataset = self.indexed_dataset()
-        indexed_pages: Dict = {}
-        i = index
-        while (len(indexed_pages) < page_size and i < len(self.dataset())):
-            if i in indexed_dataset:
-                indexed_pages[i] = indexed_dataset[i]
-            i += 1
-        page = list(indexed_pages.values())
-        page_index = indexed_pages.keys()
-        all_data = {
-            'index': index,
-            'next_index': max(page_index) + 1,
-            'page_size': len(page),
-            'data': page
-        }
-        return all_data
+        """ return a dictionary """
+        assert type(index) == int and type(page_size) == int
+        assert 0 <= index < len(self.indexed_dataset())
+        pages = []
+        next_index = index + page_size
+        for i in range(index, index + page_size):
+            if not self.indexed_dataset().get(i):
+                i += 1
+                next_index += 1
+            pages.append(self.indexed_dataset()[i])
+        return {'index': index,
+                'next_index': next_index,
+                'page_size': page_size,
+                'data': pages
+                }

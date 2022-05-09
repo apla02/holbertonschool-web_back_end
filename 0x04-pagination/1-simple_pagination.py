@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-""" Class to filter from dataset
-"""
-
-
+""" Simple pagination """
 import csv
 import math
-from typing import List, Tuple
+from typing import List
+
+
+def index_range(page, page_size):
+    """ return a tuple of size two containing a start index and an end index
+        corresponding to the range of indexes to return in a list for those
+        particular pagination parameters. """
+    if page and page_size:
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        return start_index, end_index
 
 
 class Server:
@@ -14,8 +21,6 @@ class Server:
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
-        """ dataset attribute
-        """
         self.__dataset = None
 
     def dataset(self) -> List[List]:
@@ -29,22 +34,13 @@ class Server:
 
         return self.__dataset
 
-    def index_range(self, page: int, page_size: int) -> Tuple:
-        """ tuple of range to filter
-        """
-        start_index: int = (page - 1) * page_size
-        end_index: int = page * page_size
-        tuple_of_page = (start_index, end_index)
-        return tuple_of_page
-
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """get page and information in it
-        return list with all content filtered
-        """
-        assert isinstance(page, int) and isinstance(page_size, int)
-        assert page > 0 and page_size > 0
-        offset = self.index_range(page, page_size)
-        dataset = self.dataset()
-        if offset[0] >= len(dataset) or offset[1] >= len(dataset):
-            return []
-        return [dataset[row] for row in range(offset[0], offset[1])]
+        """ obtains the indexes and return corresponding pages """
+        assert type(page) == int and page > 0
+        assert type(page_size) == int and page_size > 0
+        start, end = index_range(page, page_size)
+        pages = []
+        if start >= len(self.dataset()):
+            return pages
+        pages = self.dataset()
+        return pages[start:end]

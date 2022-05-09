@@ -1,98 +1,82 @@
 #!/usr/bin/env python3
-"""
-Main file
+""" End-to-end integration test.
+    Use assert to validate the response’s expected
+    status code and payload (if any) for each task
 """
 import requests
+URL = 'http://localhost:5000'
 
 
 def register_user(email: str, password: str) -> None:
-    """ Create a new user
-    """
-    data = {
-        'email': email,
-        'password': password
-    }
-    response = requests.post('http://localhost:5000/users', data)
-    assert response.status_code == 200
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/users', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'register_user'")
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
-    """ Valid login with a wrong password
-    """
-    url = 'http://localhost:5000/sessions'
-    data = {
-        'email': email,
-        'password': password
-    }
-    response = requests.post(url, data)
-    assert response.status_code == 401
-
-
-def log_in(email: str, password: str) -> str:
-    """ Valid loging with right data
-    """
-    url = 'http://localhost:5000/sessions'
-    data = {
-        'email': email,
-        'password': password
-    }
-    response = requests.post(url, data)
-    assert response.status_code == 200
-    return response.cookies['session_id']
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/sessions', data=data)
+    assert response.status_code == 401, "Test fail"
+    print("Task validate: 'log_in_wrong_password'")
 
 
 def profile_unlogged() -> None:
-    """ cancel login without session
-    """
-    response = requests.get('http://localhost:5000/profile')
-    assert response.status_code == 403
+    """ test """
+    data = {"session_id": ""}
+    response = requests.get(f'{URL}/profile', data=data)
+    assert response.status_code == 403, "Test fail"
+    print("Task validate: 'profile_unlogged'")
+
+
+def log_in(email: str, password: str) -> str:
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/sessions', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'log_in'")
+    session_id = response.cookies.get("session_id")
+    return session_id
 
 
 def profile_logged(session_id: str) -> None:
-    """ cancel login from someone logged
-    """
-    url = 'http://localhost:5000/profile'
-    data = {
-        'session_id': session_id
-    }
-    response = requests.get(url, cookies=data)
-    assert response.status_code == 200
+    """ test """
+    data = {"session_id": session_id}
+    response = requests.get(f'{URL}/profile', cookies=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'profile_logged'")
 
 
 def log_out(session_id: str) -> None:
-    """ log out from the application
-    """
-    url = 'http://localhost:5000/sessions'
-    data = {
-        'session_id': session_id
-    }
-    response = requests.delete(url, cookies=data)
-    assert response.status_code == 200
+    """ test """
+    data = {"session_id": session_id}
+    response = requests.delete(f'{URL}/sessions', cookies=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'log_out'")
 
 
 def reset_password_token(email: str) -> str:
-    """ Reset password token
-    """
-    url = 'http://localhost:5000/reset_password'
-    data = {
-        'email': email
-    }
-    response = requests.post(url, data)
-    assert response.status_code == 200
-    return response.json()['reset_token']
+    """ test """
+    data = {"email": email}
+    response = requests.post(f'{URL}/reset_password', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'reset_password_token'")
+    reset_token = response.json().get("reset_token")
+    return reset_token
 
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
-    """ Update password and reset toke
-    """
-    url = 'http://localhost:5000/reset_password'
+    """ test """
     data = {
-        'email': email,
-        'new_password': new_password,
-        'reset_token': reset_token
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
     }
-    response = requests.put(url, data)
-    assert response.status_code == 200
+    response = requests.put(f'{URL}/reset_password', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'update_password'")
 
 
 EMAIL = "guillaume@holberton.io"
@@ -101,6 +85,7 @@ NEW_PASSWD = "t4rt1fl3tt3"
 
 
 if __name__ == "__main__":
+
     register_user(EMAIL, PASSWD)
     log_in_wrong_password(EMAIL, NEW_PASSWD)
     profile_unlogged()
